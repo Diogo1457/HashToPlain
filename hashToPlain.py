@@ -8,8 +8,10 @@ hash_types = {
 "sha1": sha1,
 "sha224": sha224,
 "sha256": sha256, 
-"sha384": sha512
+"sha384": sha384,
+"sha512": sha512
 }
+
 what_line = 0
 found_words = []
 thread_list = []
