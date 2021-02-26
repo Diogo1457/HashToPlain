@@ -3,7 +3,13 @@
 from hashlib import md5, sha1, sha224, sha256, sha384, sha512
 from sys import argv, exit
 
-hash_types = ["md5", "sha1", "sha224", "sha256", "sha384", "sha512"]
+hash_types = {
+"md5": md5,
+"sha1": sha1,
+"sha224": sha224,
+"sha256": sha256, 
+"sha384": sha512
+}
 what_line = 0
 found_words = []
 thread_list = []
@@ -56,42 +62,12 @@ def compareHash(h, word_text):
 	:param hash_text: hash file content
 	:return: None
 	"""
-	if type_of_crypto == "md5":
-		for word in word_text:
-			if md5(word.encode("utf8")).hexdigest() == h:
-				print("Found: " + word + " - " + h)
-				found_words.append(word)
-				break
-	elif type_of_crypto == "sha1":
-		for word in word_text:
-			if sha1(word.encode("utf8")).hexdigest() == h:
-				print("Found " + word + " - " + h)
-				found_words.append(word)
-				break
-	elif type_of_crypto == "sha224":
-		for word in word_text:
-			if sha224(word.encode("utf8")).hexdigest() == h:
-				print("Found " + word + " - " + h)
-				found_words.append(word)
-				break
-	elif type_of_crypto == "sha256":
-		for word in word_text:
-			if sha256(word.encode("utf8")).hexdigest() == h:
-				print("Found " + word + " - " + h)
-				found_words.append(word)
-				break
-	elif type_of_crypto == "sha384":
-		for word in word_text:
-			if sha384(word.encode("utf8")).hexdigest() == h:
-				print("Found " + word + " - " + h)
-				found_words.append(word)
-				break
-	elif type_of_crypto == "sha512":
-		for word in word_text:
-			if sha512(word.encode("utf8")).hexdigest() == h:
-				print("Found " + word + " - " + h)
-				found_words.append(word)
-				break
+	for word in word_text:
+		if hash_types[type_of_crypto](word.encode("utf8")).hexdigest() == h:
+			print("Found: " + word + " - " + h)
+			found_words.append(word)
+			break
+
         
 
 def fileExist(filename):
@@ -144,7 +120,7 @@ def readHash():
 	"""
 	global what_line
 	try:
-		compareHash(list_of_hashes[what_line], word_file_text)
+		compareHash(list_of_hashes[what_line].rstrip(), word_file_text)
 		what_line += 1
 	except:
 		exit_code = True
@@ -207,7 +183,7 @@ while True:
 while True:
 	try:
 		type_of_crypto = argv[3]
-		if type_of_crypto.strip() in hash_types:
+		if type_of_crypto.strip() in hash_types.keys():
 			break
 		else:
 			raise Exception
@@ -215,7 +191,7 @@ while True:
 		type_of_crypto = readStr("Encryption type: ")
 		if type_of_crypto.lower() == "exit":
 			exit()
-		if type_of_crypto.strip() in hash_types:
+		if type_of_crypto.strip() in hash_types.keys():
 			break
 		else:
 			print("Invalid type of encryption!")
